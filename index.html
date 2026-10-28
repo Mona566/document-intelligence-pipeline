@@ -596,18 +596,85 @@
     .req-card li { margin-bottom: 4px; }
     .req-card li:last-child { margin-bottom: 0; }
 
+    .own-banner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .own-banner span {
+      font-size: 0.75rem;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid #c5d3de;
+      background: #fff;
+      color: var(--ink);
+    }
+    .own-banner .mine {
+      background: #eef6ef;
+      border-color: #6a9b78;
+      color: #1a3a28;
+      font-weight: 500;
+    }
+    .own-banner .plat {
+      color: var(--muted);
+    }
+    .agents.owned {
+      border: 2px solid #6a9b78;
+      background: #f4faf5;
+      box-shadow: 0 0 0 4px rgba(106, 155, 120, 0.12);
+    }
+    .agents.owned .agents-label {
+      color: #2d6a4f;
+      font-weight: 500;
+    }
+    .node.dim {
+      opacity: 0.72;
+      background: #f3f4f6;
+      border-color: #d5dde5;
+    }
+    .own-legend {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .own-legend strong { color: var(--ink); font-weight: 500; }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .problem-card {
+      background: #fff;
+      border: 1px solid #d5dde5;
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .problem-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    .problem-card p {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
     @media (max-width: 900px) {
       .agent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .fe-layout { grid-template-columns: 1fr; }
       .fe-side { position: static; }
       .tech-grid { grid-template-columns: 1fr; }
-      .metric-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .problem-grid { grid-template-columns: 1fr; }
       .req-grid { grid-template-columns: 1fr; }
       .chev { display: none; }
     }
     @media (max-width: 520px) {
       .agent-grid, .out-grid { grid-template-columns: 1fr; }
-      .metric-row { grid-template-columns: 1fr; }
       .section { padding: 20px 16px 24px; }
       .vs { grid-template-columns: 1fr; }
       .vs .mid { text-align: left; }
@@ -617,51 +684,72 @@
 <body>
   <div class="deck">
 
-    <header class="section section-head" style="margin-bottom:0; max-width:760px; border:0; background:transparent; padding:0 4px;">
-      <p class="eyebrow">Portfolio demo · AI Engineer</p>
-      <h2 style="margin:0 0 8px; font-size:1.45rem; font-weight:500;">Document intelligence pipeline</h2>
-      <p style="margin:0; color:var(--muted); font-size:0.95rem; line-height:1.5;">
-        End-to-end system I built for large-scale case-file review: OCR and classification,
-        hybrid rules + LLM extraction, knowledge graph, conflict checks, and cited drafts
-        with human-in-the-loop edit. Illustrative sample data below (not real case content).
-      </p>
-    </header>
+    <!-- 01 Problem & ownership -->
+    <section class="section" aria-labelledby="problem-title">
+      <header class="section-head">
+        <p class="eyebrow">01 · Problem &amp; ownership</p>
+        <h2 id="problem-title">Why a plain LLM call is not enough</h2>
+        <p>
+          High-stakes case files are long, multi-document, and must be complete, consistent, and
+          source-traced. A single prompt cannot enforce required-document rules, cross-file conflicts,
+          or auditable citations. I owned the review engine that turns messy dossiers into cited,
+          editable findings.
+        </p>
+      </header>
+      <div class="problem-grid">
+        <article class="problem-card">
+          <h3>Problem</h3>
+          <p>Reviewers must check identity, procedure, facts/evidence, and assets across OCR’d PDFs and transcripts — then draft notes with evidence attached.</p>
+        </article>
+        <article class="problem-card">
+          <h3>What I owned</h3>
+          <p>Review agents (Identity, Procedure, Fact–Evidence + graph, Belongings), shared missing-file / conflict engine, structured outputs with provenance, and the editable draft path.</p>
+        </article>
+        <article class="problem-card">
+          <h3>Why not only LLM</h3>
+          <p>Deterministic gates first (required docs, authority ranking); LLM for extraction and semantic conflict filtering; every claim keeps file + page + snippet for human audit.</p>
+        </article>
+      </div>
+      <div class="own-banner" aria-label="Ownership legend">
+        <span class="mine">Green outline = modules I owned</span>
+        <span class="plat">Muted = platform / shared infra I integrated with</span>
+      </div>
+    </section>
 
-    <!-- Figure 1 -->
+    <!-- 02 Architecture -->
     <section class="section" aria-labelledby="overall-title">
       <header class="section-head">
-        <p class="eyebrow">Figure 1 · Overall structure</p>
-        <h2 id="overall-title">End-to-end pipeline: documents → cited answers</h2>
+        <p class="eyebrow">02 · System architecture</p>
+        <h2 id="overall-title">Pipeline map — my modules in the center</h2>
         <p>
-          OCR → classified slices → parallel extract/review agents →
-          shared engine (file-missing + conflict checks) → structured JSON with provenance →
-          reviewer UI and draft with evidence attached.
+          Documents flow left-to-right into review agents and a shared engine I built, then into
+          cited packs and UI. OCR ingest is platform capability; the review core is my ownership.
         </p>
       </header>
 
-      <div class="flow" role="img" aria-label="Overall review pipeline structure">
+      <div class="flow" role="img" aria-label="Overall review pipeline with owned modules highlighted">
         <div class="flow-lane">
-          <div class="node">
+          <div class="node dim">
             <div class="tag">1</div>
             <strong>OCR case files</strong>
-            <span>scanned PDFs · transcripts</span>
+            <span>platform ingest</span>
           </div>
           <div class="chev" aria-hidden="true"></div>
-          <div class="node">
+          <div class="node dim">
             <div class="tag">2</div>
             <strong>Document slices</strong>
-            <span>by category / type</span>
+            <span>typed file store</span>
           </div>
         </div>
         <div class="flow-down" aria-hidden="true"></div>
-        <div class="agents">
-          <div class="agents-label">3 · Review agents <em>parallel</em></div>
+        <div class="agents owned">
+          <div class="agents-label">3 · My review agents <em>parallel · owned</em></div>
           <div class="agent-grid">
             <div class="node agent"><strong>Identity</strong><span>profile + required docs</span></div>
             <div class="node agent"><strong>Procedure</strong><span>checklist + time order</span></div>
             <div class="node agent hot">
               <strong>Fact–Evidence</strong>
-              <span>corroboration</span>
+              <span>corroboration · deep dive ↓</span>
               <div class="side">
                 <span class="side-arrow">↳</span>
                 <span class="kg">Knowledge graph</span>
@@ -674,32 +762,33 @@
         <div class="flow-lane">
           <div class="node warm">
             <div class="tag">4</div>
-            <strong>Shared engine</strong>
-            <span>file-missing check + conflict check</span>
+            <strong>Shared engine · owned</strong>
+            <span>file-missing + conflict check</span>
           </div>
           <div class="chev" aria-hidden="true"></div>
             <div class="node">
             <div class="tag">5</div>
-            <strong>Facts + provenance</strong>
+            <strong>Facts + provenance · owned</strong>
             <span>type · source · page · snippet</span>
           </div>
         </div>
         <div class="flow-down" aria-hidden="true"></div>
         <div class="outputs">
-          <div class="agents-label">6 · Outputs <em>verified packs only · evidence attached</em></div>
+          <div class="agents-label">6 · Outputs <em>owned draft path · evidence attached</em></div>
           <div class="out-grid">
             <div class="node out"><strong>Reviewer UI</strong><span>findings ↔ source pane</span></div>
-            <div class="node out"><strong>Draft with cites</strong><span>templates + evidence</span></div>
+            <div class="node out"><strong>Draft with cites</strong><span>editable · templates</span></div>
           </div>
         </div>
       </div>
+      <p class="own-legend"><strong>Center of the page = my contribution.</strong> Fact–Evidence (green card) is the worked example in section 03.</p>
     </section>
 
     <!-- Figure 2: Fact–Evidence example -->
     <section class="section" aria-labelledby="fe-title">
       <header class="section-head">
-        <p class="eyebrow">Figure 2 · Fact–Evidence example</p>
-        <h2 id="fe-title">Extraction → graph → conflicts → editable cited draft</h2>
+        <p class="eyebrow">03 · Engineering deep dive · Fact–Evidence (my module)</p>
+        <h2 id="fe-title">Completeness · extract · conflict · graph · provenance</h2>
         <p>
           An example of one agent end to end: subject profile and core facts,
           required evidence checklist, cross-document conflicts, knowledge graph,
@@ -983,11 +1072,11 @@ Reviewer action: confirm whether the missing chat export can be obtained; keep c
     <!-- Figure 3: where techniques sit -->
     <section class="section" aria-labelledby="tech-title">
       <header class="section-head">
-        <p class="eyebrow">Figure 3 · Techniques</p>
-        <h2 id="tech-title">Extraction · graph · retrieval — production techniques</h2>
+        <p class="eyebrow">03b · Techniques inside owned modules</p>
+        <h2 id="tech-title">Rules, chunking, graph extract, GraphRAG</h2>
         <p>
-          Cross-cutting methods on the same pipeline: chunking, rules and regex gates,
-          entity–relation extract, property graph cleanup, and GraphRAG with FAISS.
+          Concrete methods used in the review core: semantic chunking, rule/regex gates,
+          entity–relation extract with provenance, property-graph cleanup, and FAISS retrieval.
         </p>
       </header>
 
@@ -1067,72 +1156,50 @@ Reviewer action: confirm whether the missing chat export can be obtained; keep c
 
     </section>
 
-    <!-- Figure 4: scale, SLOs, accuracy, security -->
-    <section class="section" aria-labelledby="slo-title">
+    <!-- 04 Evaluation & limitations -->
+    <section class="section" aria-labelledby="eval-title">
       <header class="section-head">
-        <p class="eyebrow">Figure 4 · Scale · performance · accuracy · security</p>
-        <h2 id="slo-title">Production requirements we designed against</h2>
+        <p class="eyebrow">04 · Evaluation &amp; limitations</p>
+        <h2 id="eval-title">How we check quality — and what still needs humans</h2>
         <p>
-          Reliability, user scale, response expectations, AI accuracy targets, and
-          access-controlled deployment for a high-sensitivity environment.
+          No vanity production metrics here. Quality is checked through structured gates,
+          conflict surfacing, and reviewer edits — with clear limits on what automation can claim.
         </p>
       </header>
 
-      <div class="metric-row">
-        <div class="metric">
-          <div class="metric-k">Reliability</div>
-          <div class="metric-v">7 × 24</div>
-          <div class="metric-d">Uninterrupted service target</div>
-        </div>
-        <div class="metric">
-          <div class="metric-k">Users · pilot</div>
-          <div class="metric-v">~200</div>
-          <div class="metric-d">District pilot · R&amp;D phase</div>
-        </div>
-        <div class="metric">
-          <div class="metric-k">Users · full rollout</div>
-          <div class="metric-v">~17,000</div>
-          <div class="metric-d">Shared regional compute center</div>
-        </div>
-        <div class="metric highlight">
-          <div class="metric-k">AI accuracy</div>
-          <div class="metric-v">≥ 75%</div>
-          <div class="metric-d">Qualification · form review · review notes</div>
-        </div>
-      </div>
-
       <div class="req-grid">
         <article class="req-card">
-          <h3>Response &amp; stability</h3>
+          <h3>How we validate</h3>
           <ul>
-            <li>Low-latency responses after user request; targets set by scenario and concurrent load</li>
-            <li>High-throughput compute for real-time review workflows</li>
-            <li>Long-running stability — no crash under continuous operation</li>
+            <li>Schema-validated structured outputs (retry on bad JSON)</li>
+            <li>Required-document completeness before “pass”</li>
+            <li>Conflict panels with source locations for reviewer confirmation</li>
+            <li>Graph cleanup: drop isolated nodes; relations only between known entities</li>
           </ul>
         </article>
         <article class="req-card">
-          <h3>Accuracy scope</h3>
+          <h3>Conflicts &amp; provenance</h3>
           <ul>
-            <li>AI outputs held to high-stakes review standards</li>
-            <li>Target ≥ 75% on qualification, formality review, and case-note drafting</li>
-            <li>Human-in-the-loop edit path when the model is uncertain</li>
+            <li>Oral vs oral and oral vs document mismatches are surfaced, not silently merged</li>
+            <li>Every finding keeps file / page / snippet for click-through audit</li>
+            <li>Document-over-statement ranking is rule-based, then LLM filters noise</li>
           </ul>
         </article>
         <article class="req-card">
-          <h3>Security · access-controlled deployment</h3>
+          <h3>Still human-reviewed</h3>
           <ul>
-            <li>Identity authentication required</li>
-            <li>Fine-grained access control</li>
-            <li>In-transit protection: SSL / TLS</li>
-            <li>Controlled / offline-capable network constraints</li>
+            <li>Editable section summary before export</li>
+            <li>Ambiguous entity resolution and missing-file decisions</li>
+            <li>Final legal / compliance wording of draft notes</li>
           </ul>
         </article>
         <article class="req-card">
-          <h3>Rollout scale</h3>
+          <h3>Limitations</h3>
           <ul>
-            <li>Phase 1: district pilot · ~200 users</li>
-            <li>Phase 2: regional shared compute · ~17,000 users</li>
-            <li>Capacity and latency planned for the larger footprint</li>
+            <li>OCR / scan quality still bounds upstream recall</li>
+            <li>LLM extraction can miss rare edge cases — gates + edit path are required</li>
+            <li>GraphRAG helps multi-hop questions; not a substitute for primary evidence checks</li>
+            <li>Deployed in access-controlled environments (auth, ACL, TLS)</li>
           </ul>
         </article>
       </div>
