@@ -619,6 +619,11 @@
     .own-banner .plat {
       color: var(--muted);
     }
+    .panel.coplan { border-style: dashed; opacity: 0.95; }
+    .panel.built {
+      border-color: #6a9b78;
+      box-shadow: 0 0 0 2px rgba(106, 155, 120, 0.1);
+    }
     .agents.owned {
       border: 2px solid #6a9b78;
       background: #f4faf5;
@@ -703,7 +708,7 @@
         </article>
         <article class="problem-card">
           <h3>What I owned</h3>
-          <p>Review agents (Identity, Procedure, Fact–Evidence + graph, Belongings), shared missing-file / conflict engine, structured outputs with provenance, and the editable draft path.</p>
+          <p>Fact–Evidence core: conflict detection, knowledge-graph extract/cleanup, key-record surfacing, and editable cited summaries. I also co-planned subject-profile and required-file checklist design with the team.</p>
         </article>
         <article class="problem-card">
           <h3>Why not only LLM</h3>
@@ -722,8 +727,9 @@
         <p class="eyebrow">02 · System architecture</p>
         <h2 id="overall-title">Pipeline map — my modules in the center</h2>
         <p>
-          Documents flow left-to-right into review agents and a shared engine I built, then into
-          cited packs and UI. OCR ingest is platform capability; the review core is my ownership.
+          Full system path below. My deepest ownership is inside Fact–Evidence (conflict, graph,
+          records, editable summary). I contributed to planning for subject profile and file-checklist
+          design; OCR ingest is platform infrastructure.
         </p>
       </header>
 
@@ -743,13 +749,13 @@
         </div>
         <div class="flow-down" aria-hidden="true"></div>
         <div class="agents owned">
-          <div class="agents-label">3 · My review agents <em>parallel · owned</em></div>
+          <div class="agents-label">3 · Review agents <em>parallel</em></div>
           <div class="agent-grid">
-            <div class="node agent"><strong>Identity</strong><span>profile + required docs</span></div>
+            <div class="node agent"><strong>Identity</strong><span>co-planned profile fields</span></div>
             <div class="node agent"><strong>Procedure</strong><span>checklist + time order</span></div>
             <div class="node agent hot">
-              <strong>Fact–Evidence</strong>
-              <span>corroboration · deep dive ↓</span>
+              <strong>Fact–Evidence · owned core</strong>
+              <span>conflict · graph · cites ↓</span>
               <div class="side">
                 <span class="side-arrow">↳</span>
                 <span class="kg">Knowledge graph</span>
@@ -762,26 +768,26 @@
         <div class="flow-lane">
           <div class="node warm">
             <div class="tag">4</div>
-            <strong>Shared engine · owned</strong>
-            <span>file-missing + conflict check</span>
+            <strong>Shared engine</strong>
+            <span>file-missing + conflict · owned in FE path</span>
           </div>
           <div class="chev" aria-hidden="true"></div>
             <div class="node">
             <div class="tag">5</div>
-            <strong>Facts + provenance · owned</strong>
+            <strong>Facts + provenance</strong>
             <span>type · source · page · snippet</span>
           </div>
         </div>
         <div class="flow-down" aria-hidden="true"></div>
         <div class="outputs">
-          <div class="agents-label">6 · Outputs <em>owned draft path · evidence attached</em></div>
+          <div class="agents-label">6 · Outputs <em>cited draft path</em></div>
           <div class="out-grid">
             <div class="node out"><strong>Reviewer UI</strong><span>findings ↔ source pane</span></div>
-            <div class="node out"><strong>Draft with cites</strong><span>editable · templates</span></div>
+            <div class="node out"><strong>Draft with cites</strong><span>editable summary · owned</span></div>
           </div>
         </div>
       </div>
-      <p class="own-legend"><strong>Center of the page = my contribution.</strong> Fact–Evidence (green card) is the worked example in section 03.</p>
+      <p class="own-legend"><strong>Green center = Fact–Evidence ownership.</strong> Section 03 shows panels 3–6 as built by me; panels 1–2 as plan discussion.</p>
     </section>
 
     <!-- Figure 2: Fact–Evidence example -->
@@ -790,9 +796,8 @@
         <p class="eyebrow">03 · Engineering deep dive · Fact–Evidence (my module)</p>
         <h2 id="fe-title">Completeness · extract · conflict · graph · provenance</h2>
         <p>
-          An example of one agent end to end: subject profile and core facts,
-          required evidence checklist, cross-document conflicts, knowledge graph,
-          key transcripts, then an editable section summary with provenance.
+          Fact–Evidence path: panels <strong>1–2 co-planned</strong> (identity fields, required-file checklist);
+          panels <strong>3–6 built by me</strong> (conflicts, knowledge graph, key records, editable summary with provenance).
         </p>
       </header>
 
@@ -800,10 +805,10 @@
         <div class="fe-main">
 
           <!-- 1 Identity + core facts -->
-          <article class="panel">
+          <article class="panel coplan">
             <div class="panel-h">
               <h3>Subject profile &amp; core facts</h3>
-              <span class="step">1 · Identity</span>
+              <span class="step">1 · Identity · co-planned</span>
             </div>
             <div class="profile">
               <div class="profile-row"><span>Name</span><strong>Alex Chen</strong></div>
@@ -818,10 +823,10 @@
           </article>
 
           <!-- 2 Missing-file check -->
-          <article class="panel">
+          <article class="panel coplan">
             <div class="panel-h">
               <h3>Required evidence checklist</h3>
-              <span class="step">2 · Files</span>
+              <span class="step">2 · Files · co-planned</span>
             </div>
             <ul class="check-list">
               <li class="ok">
@@ -853,10 +858,10 @@
           </article>
 
           <!-- 4 Knowledge graph — aligned to 6 entity types + relation lexicon -->
-          <article class="panel">
+          <article class="panel built">
             <div class="panel-h">
               <h3>Knowledge graph · extracted triples</h3>
-              <span class="step">4 · Graph</span>
+              <span class="step">4 · Graph · built</span>
             </div>
             <p class="graph-note">
               Six entity types: Person · Organization · Asset · Legal provision · Auxiliary fact · Impact &amp; consequence.
@@ -978,10 +983,10 @@
           </article>
 
           <!-- 5 Key transcripts -->
-          <article class="panel">
+          <article class="panel built">
             <div class="panel-h">
               <h3>Key transcript files</h3>
-              <span class="step">5 · Records</span>
+              <span class="step">5 · Records · built</span>
             </div>
             <div class="files">
               <div class="file">
@@ -1011,10 +1016,10 @@
 
         <!-- Right: conflicts only -->
         <aside class="fe-side">
-          <article class="panel">
+          <article class="panel built">
             <div class="panel-h">
               <h3>Cross-file conflicts</h3>
-              <span class="step">3 · Conflict</span>
+              <span class="step">3 · Conflict · built</span>
             </div>
             <div class="finding">
               <div class="kind">Oral vs oral</div>
@@ -1041,10 +1046,10 @@
       </div>
 
       <!-- 6 Summary — full width under the two columns, still editable -->
-      <article class="panel fe-summary" style="padding:0; overflow:hidden;">
+      <article class="panel built fe-summary" style="padding:0; overflow:hidden;">
         <div class="panel-h" style="padding:12px 14px 0; margin-bottom:0;">
           <h3>Section summary</h3>
-          <span class="step">6 · Summary</span>
+          <span class="step">6 · Summary · built</span>
         </div>
         <div class="editor">
           <div class="editor-bar">
@@ -1162,8 +1167,8 @@ Reviewer action: confirm whether the missing chat export can be obtained; keep c
         <p class="eyebrow">04 · Evaluation &amp; limitations</p>
         <h2 id="eval-title">How we check quality — and what still needs humans</h2>
         <p>
-          No vanity production metrics here. Quality is checked through structured gates,
-          conflict surfacing, and reviewer edits — with clear limits on what automation can claim.
+          Quality is checked through structured gates, conflict surfacing, and reviewer edits —
+          with clear limits on what automation can claim.
         </p>
       </header>
 
@@ -1200,6 +1205,77 @@ Reviewer action: confirm whether the missing chat export can be obtained; keep c
             <li>LLM extraction can miss rare edge cases — gates + edit path are required</li>
             <li>GraphRAG helps multi-hop questions; not a substitute for primary evidence checks</li>
             <li>Deployed in access-controlled environments (auth, ACL, TLS)</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- 05 System performance targets -->
+    <section class="section" aria-labelledby="slo-title">
+      <header class="section-head">
+        <p class="eyebrow">05 · System performance targets</p>
+        <h2 id="slo-title">Scale, reliability, accuracy, security</h2>
+        <p>
+          Deployment design targets for the access-controlled rollout (planning envelope,
+          not a single public benchmark report).
+        </p>
+      </header>
+
+      <div class="metric-row">
+        <div class="metric">
+          <div class="metric-k">Reliability</div>
+          <div class="metric-v">7 × 24</div>
+          <div class="metric-d">Uninterrupted service target</div>
+        </div>
+        <div class="metric">
+          <div class="metric-k">Users · pilot</div>
+          <div class="metric-v">~200</div>
+          <div class="metric-d">District pilot · R&amp;D phase</div>
+        </div>
+        <div class="metric">
+          <div class="metric-k">Users · full rollout</div>
+          <div class="metric-v">~17,000</div>
+          <div class="metric-d">Shared regional compute center</div>
+        </div>
+        <div class="metric highlight">
+          <div class="metric-k">AI accuracy target</div>
+          <div class="metric-v">≥ 75%</div>
+          <div class="metric-d">Qualification · form review · review notes</div>
+        </div>
+      </div>
+
+      <div class="req-grid">
+        <article class="req-card">
+          <h3>Response &amp; stability</h3>
+          <ul>
+            <li>Low-latency responses after user request; targets set by scenario and concurrent load</li>
+            <li>High-throughput compute for real-time review workflows</li>
+            <li>Long-running stability under continuous operation</li>
+          </ul>
+        </article>
+        <article class="req-card">
+          <h3>Accuracy scope</h3>
+          <ul>
+            <li>AI outputs held to high-stakes review standards</li>
+            <li>Target ≥ 75% on qualification, formality review, and case-note drafting</li>
+            <li>Human-in-the-loop edit path when the model is uncertain</li>
+          </ul>
+        </article>
+        <article class="req-card">
+          <h3>Security · access-controlled deployment</h3>
+          <ul>
+            <li>Identity authentication required</li>
+            <li>Fine-grained access control</li>
+            <li>In-transit protection: SSL / TLS</li>
+            <li>Controlled / offline-capable network constraints</li>
+          </ul>
+        </article>
+        <article class="req-card">
+          <h3>Rollout scale</h3>
+          <ul>
+            <li>Phase 1: district pilot · ~200 users</li>
+            <li>Phase 2: regional shared compute · ~17,000 users</li>
+            <li>Capacity and latency planned for the larger footprint</li>
           </ul>
         </article>
       </div>
