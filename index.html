@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Document Intelligence Pipeline — Portfolio Demo</title>
+  <style>
+    :root {
+      --bg: #f3f0e8;
+      --panel: #fffcf7;
+      --ink: #1a2332;
+      --muted: #5c6b7a;
+      --line: #d5cfc4;
+      --accent: #2f5d7a;
+      --accent-soft: #e8f1f7;
+      --accent-border: #3d6b8c;
+      --warm: #f4ebe0;
+      --warm-border: #c4a882;
+      --green: #eef6ef;
+      --green-border: #6a9b78;
+      --danger: #f8e8e8;
+      --danger-border: #c97a7a;
+      --ok: #2d6a4f;
+      --sans: "IBM Plex Sans", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 520px at 8% -8%, #e4eef5 0%, transparent 55%),
+        radial-gradient(800px 480px at 100% 0%, #efe4d4 0%, transparent 50%),
+        var(--bg);
+    }
+
+    .deck {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      padding: 36px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px 28px 32px;
+    }
+
+    .section-head {
+      margin-bottom: 22px;
+      max-width: 760px;
+    }
+    .eyebrow {
+      margin: 0 0 6px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .section-head h2 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* —— Figure 1 flow —— */
+    .flow { display: flex; flex-direction: column; align-items: stretch; }
+    .flow-lane {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .node {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      min-width: 160px;
+      max-width: 260px;
+      flex: 1 1 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+    }
+    .node strong { font-size: 0.95rem; font-weight: 500; }
+    .node span { color: var(--muted); font-size: 0.82rem; line-height: 1.35; }
+    .node .tag {
+      position: absolute;
+      top: -10px;
+      left: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 500;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+    .node.warm { background: var(--warm); border-color: var(--warm-border); }
+    .node.agent, .node.out {
+      background: #fff;
+      border-color: #c5d3de;
+      min-width: 0;
+      max-width: none;
+    }
+    .node.agent.hot { background: var(--green); border-color: var(--green-border); }
+    .node.out { background: #f7fafc; }
+    .chev {
+      width: 18px;
+      align-self: center;
+      height: 2px;
+      background: #9aabba;
+      position: relative;
+      flex: 0 0 18px;
+    }
+    .chev::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -4px;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 7px solid #9aabba;
+    }
+    .flow-down {
+      width: 2px;
+      height: 20px;
+      background: #9aabba;
+      margin: 8px auto;
+      position: relative;
+    }
+    .flow-down::after {
+      content: "";
+      position: absolute;
+      left: -4px;
+      bottom: -1px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 7px solid #9aabba;
+    }
+    .agents, .outputs {
+      border: 1px dashed #c5d3de;
+      border-radius: 14px;
+      padding: 14px 12px 12px;
+      background: #fbfcfd;
+    }
+    .agents-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0 0 10px 4px;
+      font-weight: 500;
+    }
+    .agents-label em { font-style: normal; font-weight: 400; opacity: 0.85; }
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .out-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .side {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #a3c4ad;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .side-arrow { color: #6a9b78; font-size: 0.8rem; }
+    .kg {
+      background: #dff0e3;
+      border: 1px solid #8fbf9b;
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--ink);
+      font-size: 0.78rem;
+    }
+
+    /* —— Figure 2 Fact–Evidence —— */
+    .fe-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.9fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .fe-main {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .fe-side {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: sticky;
+      top: 16px;
+    }
+    .fe-summary {
+      margin-top: 14px;
+    }
+    .triple-chip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px dashed #c9d5df;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .triple-chip b { color: var(--ink); font-weight: 500; }
+
+    .panel {
+      background: #fff;
+      border: 1px solid #d5dde5;
+      border-radius: 12px;
+      padding: 12px 14px 14px;
+    }
+    .panel-h {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .panel-h h3 {
+      margin: 0;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+    .panel-h .step {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .profile { display: flex; flex-direction: column; gap: 8px; }
+    .profile-row {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 10px;
+      align-items: baseline;
+      font-size: 0.84rem;
+    }
+    .profile-row span { color: var(--muted); }
+    .profile-row strong { font-weight: 500; }
+    .profile-fact {
+      margin-top: 4px;
+      padding: 10px 12px;
+      background: #f7fafc;
+      border: 1px solid #d7e0e8;
+      border-radius: 8px;
+    }
+    .profile-fact .label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .profile-fact p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: #2a3644;
+    }
+
+    .check-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .check-list li {
+      display: grid;
+      grid-template-columns: 22px 1fr auto;
+      gap: 10px;
+      align-items: start;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #e2e8ef;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .check-list li.ok { background: #f3faf5; border-color: #b7d7c0; }
+    .check-list li.miss { background: var(--danger); border-color: var(--danger-border); }
+    .mark {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-top: 1px;
+    }
+    .ok .mark { background: #d8f0df; color: var(--ok); }
+    .miss .mark { background: #f3d0d0; color: #9b2226; }
+    .loc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      text-align: right;
+    }
+    .miss .loc { color: #9b2226; font-weight: 500; }
+
+    .graph-note {
+      margin: 0 0 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .graph-wrap {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(61, 107, 140, 0.06), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(106, 155, 120, 0.08), transparent 45%),
+        #f5f8f6;
+      border: 1px solid #c9dccf;
+      border-radius: 12px;
+      padding: 12px 10px 8px;
+      overflow: hidden;
+    }
+    .graph-wrap svg { width: 100%; height: auto; display: block; }
+    .graph-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 0 4px;
+    }
+    .graph-legend span {
+      font-size: 0.7rem;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .files { display: flex; flex-direction: column; gap: 8px; }
+    .file {
+      border: 1px solid #e2e8ef;
+      border-radius: 8px;
+      padding: 9px 11px;
+      background: #fbfcfd;
+    }
+    .file .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+    .file strong { font-size: 0.84rem; font-weight: 500; }
+    .file .meta { font-size: 0.72rem; color: var(--muted); }
+    .file p {
+      margin: 0;
+      font-size: 0.78rem;
+      color: #445466;
+      line-height: 1.4;
+    }
+
+    .finding {
+      background: var(--danger);
+      border: 1px solid var(--danger-border);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .finding:last-child { margin-bottom: 0; }
+    .finding .kind {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #9b4444;
+      margin-bottom: 4px;
+    }
+    .finding .cite {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+    .vs {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 6px;
+      align-items: stretch;
+      margin-top: 6px;
+      font-size: 0.74rem;
+    }
+    .vs div {
+      background: #fff;
+      border: 1px solid #e2c4c4;
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+    .vs .mid {
+      align-self: center;
+      background: transparent;
+      border: 0;
+      color: #9b4444;
+      font-weight: 500;
+      padding: 0;
+      text-align: center;
+    }
+
+    .editor {
+      border: 1px solid var(--accent-border);
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+      margin-top: 2px;
+    }
+    .editor-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--accent-soft);
+      border-bottom: 1px solid #c5d3de;
+      font-size: 0.75rem;
+    }
+    .editor-bar strong { font-weight: 500; }
+    .editor-actions { display: flex; gap: 6px; }
+    .btn {
+      border: 1px solid #b8c6d1;
+      background: #fff;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      color: var(--ink);
+      cursor: default;
+    }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .editor textarea {
+      width: 100%;
+      border: 0;
+      resize: vertical;
+      min-height: 130px;
+      padding: 12px 14px;
+      font: inherit;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: var(--ink);
+      outline: none;
+      background: #fff;
+    }
+
+    /* —— Figure 3 techniques —— */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .tech-card {
+      background: #fff;
+      border: 1px solid #d5dde5;
+      border-radius: 12px;
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 100%;
+    }
+    .tech-card .layer {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .tech-card h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .tech-card p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: auto;
+      padding-top: 4px;
+    }
+    .tech-tags span {
+      font-size: 0.72rem;
+      background: #f3f6f9;
+      border: 1px solid #d5dde5;
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: #334155;
+      font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .metric {
+      background: #fff;
+      border: 1px solid #d5dde5;
+      border-radius: 12px;
+      padding: 14px 14px 12px;
+    }
+    .metric.highlight {
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+    }
+    .metric-k {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .metric-v {
+      font-size: 1.55rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+    .metric-d {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .req-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .req-card {
+      background: #fff;
+      border: 1px solid #d5dde5;
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .req-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+    .req-card ul {
+      margin: 0;
+      padding: 0 0 0 18px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .req-card li { margin-bottom: 4px; }
+    .req-card li:last-child { margin-bottom: 0; }
+
+    @media (max-width: 900px) {
+      .agent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .fe-layout { grid-template-columns: 1fr; }
+      .fe-side { position: static; }
+      .tech-grid { grid-template-columns: 1fr; }
+      .metric-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .req-grid { grid-template-columns: 1fr; }
+      .chev { display: none; }
+    }
+    @media (max-width: 520px) {
+      .agent-grid, .out-grid { grid-template-columns: 1fr; }
+      .metric-row { grid-template-columns: 1fr; }
+      .section { padding: 20px 16px 24px; }
+      .vs { grid-template-columns: 1fr; }
+      .vs .mid { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+
+    <header class="section section-head" style="margin-bottom:0; max-width:760px; border:0; background:transparent; padding:0 4px;">
+      <p class="eyebrow">Portfolio demo · AI Engineer</p>
+      <h2 style="margin:0 0 8px; font-size:1.45rem; font-weight:500;">Document intelligence pipeline</h2>
+      <p style="margin:0; color:var(--muted); font-size:0.95rem; line-height:1.5;">
+        End-to-end system I built for large-scale case-file review: OCR and classification,
+        hybrid rules + LLM extraction, knowledge graph, conflict checks, and cited drafts
+        with human-in-the-loop edit. Illustrative sample data below (not real case content).
+      </p>
+    </header>
+
+    <!-- Figure 1 -->
+    <section class="section" aria-labelledby="overall-title">
+      <header class="section-head">
+        <p class="eyebrow">Figure 1 · Overall structure</p>
+        <h2 id="overall-title">End-to-end pipeline: documents → cited answers</h2>
+        <p>
+          OCR → classified slices → parallel extract/review agents →
+          shared engine (file-missing + conflict checks) → structured JSON with provenance →
+          reviewer UI and draft with evidence attached.
+        </p>
+      </header>
+
+      <div class="flow" role="img" aria-label="Overall review pipeline structure">
+        <div class="flow-lane">
+          <div class="node">
+            <div class="tag">1</div>
+            <strong>OCR case files</strong>
+            <span>scanned PDFs · transcripts</span>
+          </div>
+          <div class="chev" aria-hidden="true"></div>
+          <div class="node">
+            <div class="tag">2</div>
+            <strong>Document slices</strong>
+            <span>by category / type</span>
+          </div>
+        </div>
+        <div class="flow-down" aria-hidden="true"></div>
+        <div class="agents">
+          <div class="agents-label">3 · Review agents <em>parallel</em></div>
+          <div class="agent-grid">
+            <div class="node agent"><strong>Identity</strong><span>profile + required docs</span></div>
+            <div class="node agent"><strong>Procedure</strong><span>checklist + time order</span></div>
+            <div class="node agent hot">
+              <strong>Fact–Evidence</strong>
+              <span>corroboration</span>
+              <div class="side">
+                <span class="side-arrow">↳</span>
+                <span class="kg">Knowledge graph</span>
+              </div>
+            </div>
+            <div class="node agent"><strong>Belongings</strong><span>asset reconcile</span></div>
+          </div>
+        </div>
+        <div class="flow-down" aria-hidden="true"></div>
+        <div class="flow-lane">
+          <div class="node warm">
+            <div class="tag">4</div>
+            <strong>Shared engine</strong>
+            <span>file-missing check + conflict check</span>
+          </div>
+          <div class="chev" aria-hidden="true"></div>
+            <div class="node">
+            <div class="tag">5</div>
+            <strong>Facts + provenance</strong>
+            <span>type · source · page · snippet</span>
+          </div>
+        </div>
+        <div class="flow-down" aria-hidden="true"></div>
+        <div class="outputs">
+          <div class="agents-label">6 · Outputs <em>verified packs only · evidence attached</em></div>
+          <div class="out-grid">
+            <div class="node out"><strong>Reviewer UI</strong><span>findings ↔ source pane</span></div>
+            <div class="node out"><strong>Draft with cites</strong><span>templates + evidence</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Figure 2: Fact–Evidence example -->
+    <section class="section" aria-labelledby="fe-title">
+      <header class="section-head">
+        <p class="eyebrow">Figure 2 · Fact–Evidence example</p>
+        <h2 id="fe-title">Extraction → graph → conflicts → editable cited draft</h2>
+        <p>
+          An example of one agent end to end: subject profile and core facts,
+          required evidence checklist, cross-document conflicts, knowledge graph,
+          key transcripts, then an editable section summary with provenance.
+        </p>
+      </header>
+
+      <div class="fe-layout">
+        <div class="fe-main">
+
+          <!-- 1 Identity + core facts -->
+          <article class="panel">
+            <div class="panel-h">
+              <h3>Subject profile &amp; core facts</h3>
+              <span class="step">1 · Identity</span>
+            </div>
+            <div class="profile">
+              <div class="profile-row"><span>Name</span><strong>Alex Chen</strong></div>
+              <div class="profile-row"><span>Role</span><strong>Deputy director · Org Alpha</strong></div>
+              <div class="profile-row"><span>Affiliation</span><strong>Public employee</strong></div>
+              <div class="profile-row"><span>Case type</span><strong>Alleged improper benefit</strong></div>
+              <div class="profile-fact">
+                <span class="label">Core alleged fact</span>
+                <p>Between Feb–Mar 2024, the subject is alleged to have received ¥80,000 linked to a procurement favor; payment date and supporting materials are under cross-check across transcripts and bank records.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- 2 Missing-file check -->
+          <article class="panel">
+            <div class="panel-h">
+              <h3>Required evidence checklist</h3>
+              <span class="step">2 · Files</span>
+            </div>
+            <ul class="check-list">
+              <li class="ok">
+                <span class="mark" aria-label="found">✓</span>
+                <div>Bank transfer slip for the alleged payment</div>
+                <span class="loc">Bundle C · p.17</span>
+              </li>
+              <li class="ok">
+                <span class="mark" aria-label="found">✓</span>
+                <div>Primary interview transcript</div>
+                <span class="loc">Bundle B · p.5–18</span>
+              </li>
+              <li class="ok">
+                <span class="mark" aria-label="found">✓</span>
+                <div>Witness interview transcript</div>
+                <span class="loc">Bundle B · p.22–31</span>
+              </li>
+              <li class="miss">
+                <span class="mark" aria-label="missing">✗</span>
+                <div>Chat export covering the same transfer</div>
+                <span class="loc">Missing</span>
+              </li>
+              <li class="miss">
+                <span class="mark" aria-label="missing">✗</span>
+                <div>Valuation report for related assets</div>
+                <span class="loc">Missing</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- 4 Knowledge graph — aligned to 6 entity types + relation lexicon -->
+          <article class="panel">
+            <div class="panel-h">
+              <h3>Knowledge graph · extracted triples</h3>
+              <span class="step">4 · Graph</span>
+            </div>
+            <p class="graph-note">
+              Six entity types: Person · Organization · Asset · Legal provision · Auxiliary fact · Impact &amp; consequence.
+              Relations only between extracted nodes; isolated nodes are dropped.
+            </p>
+            <div class="graph-wrap" role="img" aria-label="Schema-aligned knowledge graph with six entity types and typed relations">
+              <svg viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 1.2 L 9 5 L 0 8.8 z" fill="#6b7c8c"/>
+                  </marker>
+                  <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="2.2" flood-color="#1a2332" flood-opacity="0.1"/>
+                  </filter>
+                </defs>
+
+                <!-- edges: source:name → relation → target:name -->
+                <g fill="none" stroke="#7f92a3" stroke-width="1.8" marker-end="url(#arr)">
+                  <!-- Person:Zhang → belongs_to → Org:Bureau X -->
+                  <path d="M 200 70 H 255"/>
+                  <!-- Person:Zhang → receives → Asset -->
+                  <path d="M 160 100 V 155"/>
+                  <!-- Person:Li → investigates / interviewed → Person:Zhang (shown as interviewed) -->
+                  <path d="M 95 155 V 100"/>
+                  <!-- Person:Li → corroborates → Asset -->
+                  <path d="M 130 185 H 255"/>
+                  <!-- Asset → supports → Auxiliary fact -->
+                  <path d="M 360 185 H 470"/>
+                  <!-- Auxiliary fact → cites → Legal provision -->
+                  <path d="M 560 160 V 100"/>
+                  <!-- Person:Zhang → subject_to_disposition → Impact -->
+                  <path d="M 200 85 C 300 120, 360 220, 390 275"/>
+                  <!-- Legal provision → grounds → Impact -->
+                  <path d="M 580 100 C 600 180, 560 240, 500 275"/>
+                  <!-- Asset → related_to → Impact -->
+                  <path d="M 330 212 V 270"/>
+                </g>
+
+                <!-- relation labels (from lexicon / categories) -->
+                <text x="210" y="58" font-size="11" fill="#5c6b7a">belongs to</text>
+                <text x="168" y="130" font-size="11" fill="#5c6b7a">receives</text>
+                <text x="38" y="130" font-size="11" fill="#5c6b7a">interviewed</text>
+                <text x="165" y="175" font-size="11" fill="#5c6b7a">corroborates</text>
+                <text x="390" y="175" font-size="11" fill="#5c6b7a">supports</text>
+                <text x="575" y="135" font-size="11" fill="#5c6b7a">cites</text>
+                <text x="250" y="200" font-size="11" fill="#9b4444" font-weight="500">disposition</text>
+                <text x="345" y="245" font-size="11" fill="#5c6b7a">involves</text>
+                <text x="545" y="210" font-size="11" fill="#5c6b7a">grounds</text>
+
+                <!-- Person: Zhang (被审查人) -->
+                <g filter="url(#soft)">
+                  <rect x="70" y="42" width="130" height="58" rx="14" fill="#eaf3f9" stroke="#3d6b8c" stroke-width="1.6"/>
+                  <text x="135" y="62" text-anchor="middle" font-size="10" fill="#5c6b7a">Person</text>
+                  <text x="135" y="80" text-anchor="middle" font-size="13" fill="#1a2332" font-weight="500">Alex (subject)</text>
+                </g>
+
+                <!-- Organization -->
+                <g filter="url(#soft)">
+                  <rect x="255" y="42" width="130" height="58" rx="14" fill="#f7efe4" stroke="#c4a882" stroke-width="1.6"/>
+                  <text x="320" y="62" text-anchor="middle" font-size="10" fill="#5c6b7a">Organization</text>
+                  <text x="320" y="80" text-anchor="middle" font-size="13" fill="#1a2332" font-weight="500">Org Alpha</text>
+                </g>
+
+                <!-- Legal provision -->
+                <g filter="url(#soft)">
+                  <rect x="500" y="42" width="160" height="58" rx="14" fill="#f3eee6" stroke="#a89068" stroke-width="1.6"/>
+                  <text x="580" y="62" text-anchor="middle" font-size="10" fill="#5c6b7a">Legal provision</text>
+                  <text x="580" y="80" text-anchor="middle" font-size="13" fill="#1a2332" font-weight="500">Policy · Clause 12</text>
+                </g>
+
+                <!-- Person: witness -->
+                <g filter="url(#soft)">
+                  <rect x="40" y="155" width="130" height="58" rx="14" fill="#eaf3f9" stroke="#3d6b8c" stroke-width="1.6"/>
+                  <text x="105" y="175" text-anchor="middle" font-size="10" fill="#5c6b7a">Person</text>
+                  <text x="105" y="193" text-anchor="middle" font-size="13" fill="#1a2332" font-weight="500">Blake (witness)</text>
+                </g>
+
+                <!-- Asset -->
+                <g filter="url(#soft)">
+                  <rect x="255" y="155" width="140" height="58" rx="14" fill="#eaf6ec" stroke="#6a9b78" stroke-width="1.6"/>
+                  <text x="325" y="175" text-anchor="middle" font-size="10" fill="#5c6b7a">Asset</text>
+                  <text x="325" y="193" text-anchor="middle" font-size="13" fill="#1a2332" font-weight="500">Cash ¥80,000</text>
+                </g>
+
+                <!-- Auxiliary fact (辅助事实) -->
+                <g filter="url(#soft)">
+                  <rect x="470" y="155" width="180" height="58" rx="14" fill="#eef2f8" stroke="#7a8fb0" stroke-width="1.6"/>
+                  <text x="560" y="175" text-anchor="middle" font-size="10" fill="#5c6b7a">Auxiliary fact</text>
+                  <text x="560" y="193" text-anchor="middle" font-size="13" fill="#1a2332" font-weight="500">Transfer on 12 March</text>
+                </g>
+
+                <!-- Impact & consequence (影响及后果) — document-grounded, not a vague “pending” status -->
+                <g filter="url(#soft)">
+                  <rect x="300" y="275" width="200" height="62" rx="14" fill="#fbeeee" stroke="#c97a7a" stroke-width="1.8"/>
+                  <text x="400" y="297" text-anchor="middle" font-size="10" fill="#5c6b7a">Impact &amp; consequence</text>
+                  <text x="400" y="317" text-anchor="middle" font-size="13" fill="#1a2332" font-weight="500">Proposed outcome</text>
+                </g>
+              </svg>
+            </div>
+            <div class="graph-legend">
+              <span><i class="dot" style="background:#3d6b8c"></i>Person</span>
+              <span><i class="dot" style="background:#c4a882"></i>Organization</span>
+              <span><i class="dot" style="background:#6a9b78"></i>Asset</span>
+              <span><i class="dot" style="background:#a89068"></i>Legal provision</span>
+              <span><i class="dot" style="background:#7a8fb0"></i>Auxiliary fact</span>
+              <span><i class="dot" style="background:#c97a7a"></i>Impact &amp; consequence</span>
+            </div>
+            <div class="triple-chip">
+              <span><b>Person:Alex</b> —belongs to→ <b>Organization:Org Alpha</b></span>
+              <span>·</span>
+              <span><b>Person:Alex</b> —receives→ <b>Asset:Cash ¥80,000</b></span>
+              <span>·</span>
+              <span><b>Person:Blake</b> —corroborates→ <b>Asset:Cash ¥80,000</b></span>
+              <span>·</span>
+              <span><b>Asset</b> —supports→ <b>Auxiliary fact:Transfer on 12 March</b></span>
+              <span>·</span>
+              <span><b>Person:Alex</b> —disposition→ <b>Impact:Proposed outcome</b></span>
+            </div>
+          </article>
+
+          <!-- 5 Key transcripts -->
+          <article class="panel">
+            <div class="panel-h">
+              <h3>Key transcript files</h3>
+              <span class="step">5 · Records</span>
+            </div>
+            <div class="files">
+              <div class="file">
+                <div class="top">
+                  <strong>Primary interview transcript</strong>
+                  <span class="meta">Bundle B · p.5–18</span>
+                </div>
+                <p>Subject denies receiving cash; describes the March meeting as routine work. Mentions colleagues at Org Alpha.</p>
+              </div>
+              <div class="file">
+                <div class="top">
+                  <strong>Witness interview transcript</strong>
+                  <span class="meta">Bundle B · p.22–31</span>
+                </div>
+                <p>Witness describes handing over ¥80,000 on 12 March; links the transfer to a procurement favor. References a chat record (file missing).</p>
+              </div>
+              <div class="file">
+                <div class="top">
+                  <strong>Cross-check notes</strong>
+                  <span class="meta">Bundle B · p.40–44</span>
+                </div>
+                <p>Both parties questioned on the payment date; bank slip supports 12 March; the earlier oral date remains unresolved.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Right: conflicts only -->
+        <aside class="fe-side">
+          <article class="panel">
+            <div class="panel-h">
+              <h3>Cross-file conflicts</h3>
+              <span class="step">3 · Conflict</span>
+            </div>
+            <div class="finding">
+              <div class="kind">Oral vs oral</div>
+              Same transfer, different dates.
+              <div class="vs">
+                <div><strong>Subject</strong><br/>28 February</div>
+                <div class="mid">vs</div>
+                <div><strong>Witness</strong><br/>12 March</div>
+              </div>
+              <div class="cite">Bundle B p.9 ↔ Bundle B p.26</div>
+            </div>
+            <div class="finding">
+              <div class="kind">Oral vs document</div>
+              Subject’s date conflicts with bank slip; documentary evidence prevails over the oral account.
+              <div class="vs">
+                <div><strong>Subject oral</strong><br/>28 February</div>
+                <div class="mid">vs</div>
+                <div><strong>Bank slip</strong><br/>12 March · Bundle C p.17</div>
+              </div>
+              <div class="cite">rule: document &gt; transcript</div>
+            </div>
+          </article>
+        </aside>
+      </div>
+
+      <!-- 6 Summary — full width under the two columns, still editable -->
+      <article class="panel fe-summary" style="padding:0; overflow:hidden;">
+        <div class="panel-h" style="padding:12px 14px 0; margin-bottom:0;">
+          <h3>Section summary</h3>
+          <span class="step">6 · Summary</span>
+        </div>
+        <div class="editor">
+          <div class="editor-bar">
+            <strong>Fact–Evidence · draft notes · editable</strong>
+            <div class="editor-actions">
+              <span class="btn">Reset</span>
+              <span class="btn primary">Save edit</span>
+            </div>
+          </div>
+          <textarea aria-label="Editable Fact-Evidence summary">Fact-Evidence summary (editable)
+
+1) Subject: Alex Chen, deputy director at Org Alpha; alleged improper benefit of ¥80,000 tied to a procurement favor (Feb–Mar 2024).
+
+2) Evidence completeness: bank slip and two transcripts are present; chat export and valuation report are missing — flagged for supplement.
+
+3) Conflicts: payment date disputed (28 February vs 12 March). Bank slip supports 12 March; document prevails over the oral account — note the conflict explicitly.
+
+4) Graph (six entity types): Person:Alex belongs to Organization:Org Alpha; Alex receives Asset:Cash ¥80,000; Person:Blake corroborates the asset; asset supports Auxiliary fact:Transfer on 12 March; Alex -disposition-> Impact & consequence:Proposed outcome (grounded in Legal provision:Policy · Clause 12). No isolated nodes.
+
+Reviewer action: confirm whether the missing chat export can be obtained; keep conflict language in the final notes.</textarea>
+        </div>
+      </article>
+    </section>
+
+    <!-- Figure 3: where techniques sit -->
+    <section class="section" aria-labelledby="tech-title">
+      <header class="section-head">
+        <p class="eyebrow">Figure 3 · Techniques</p>
+        <h2 id="tech-title">Extraction · graph · retrieval — production techniques</h2>
+        <p>
+          Cross-cutting methods on the same pipeline: chunking, rules and regex gates,
+          entity–relation extract, property graph cleanup, and GraphRAG with FAISS.
+        </p>
+      </header>
+
+      <div class="tech-grid">
+        <article class="tech-card">
+          <div class="layer">Ingest · long docs</div>
+          <h3>Chunking &amp; OCR path</h3>
+          <p>Bound PDFs → typed slices; long transcripts split on semantic boundaries before LLM calls; parallel requests with schema retry.</p>
+          <div class="tech-tags">
+            <span>OCR</span>
+            <span>semantic chunking</span>
+            <span>parallel LLM</span>
+            <span>Pydantic / schema</span>
+          </div>
+        </article>
+
+        <article class="tech-card">
+          <div class="layer">Shared engine · gates</div>
+          <h3>Rules first, then LLM</h3>
+          <p>Missing-file checks and authority ranking are deterministic (rule tables / regex / type match). LLM only ranks or filters remaining semantic conflicts.</p>
+          <div class="tech-tags">
+            <span>rule tables</span>
+            <span>regex</span>
+            <span>doc hierarchy</span>
+            <span>LLM filter</span>
+          </div>
+        </article>
+
+        <article class="tech-card">
+          <div class="layer">Fact–Evidence · extract</div>
+          <h3>Entities, relations, cites</h3>
+          <p>Joint entity–relation extract into typed triples; every claim keeps file_id + page + snippet for the reviewer UI.</p>
+          <div class="tech-tags">
+            <span>NER + RE</span>
+            <span>6 entity types</span>
+            <span>provenance</span>
+            <span>JSON packs</span>
+          </div>
+        </article>
+
+        <article class="tech-card">
+          <div class="layer">Knowledge graph · store</div>
+          <h3>Property graph + cleanup</h3>
+          <p>Build nodes/edges per file; drop isolated nodes; resolve same person/org across slices before merge.</p>
+          <div class="tech-tags">
+            <span>property graph</span>
+            <span>triple validate</span>
+            <span>entity resolve</span>
+            <span>no orphans</span>
+          </div>
+        </article>
+
+        <article class="tech-card">
+          <div class="layer">Retrieval · GraphRAG</div>
+          <h3>Graph walk + vector search</h3>
+          <p>Question → NER → BFS over relations, plus FAISS over graph text snippets; merge into cited LLM context.</p>
+          <div class="tech-tags">
+            <span>BFS expand</span>
+            <span>embeddings</span>
+            <span>FAISS</span>
+            <span>IndexFlatL2</span>
+          </div>
+        </article>
+
+        <article class="tech-card">
+          <div class="layer">Serve · trust</div>
+          <h3>Human-in-the-loop</h3>
+          <p>Editable section drafts, conflict panels, download/history — model output never ships without reviewer control.</p>
+          <div class="tech-tags">
+            <span>cited UI</span>
+            <span>edit / save</span>
+            <span>export</span>
+            <span>audit trail</span>
+          </div>
+        </article>
+      </div>
+
+    </section>
+
+    <!-- Figure 4: scale, SLOs, accuracy, security -->
+    <section class="section" aria-labelledby="slo-title">
+      <header class="section-head">
+        <p class="eyebrow">Figure 4 · Scale · performance · accuracy · security</p>
+        <h2 id="slo-title">Production requirements we designed against</h2>
+        <p>
+          Reliability, user scale, response expectations, AI accuracy targets, and
+          access-controlled deployment for a high-sensitivity environment.
+        </p>
+      </header>
+
+      <div class="metric-row">
+        <div class="metric">
+          <div class="metric-k">Reliability</div>
+          <div class="metric-v">7 × 24</div>
+          <div class="metric-d">Uninterrupted service target</div>
+        </div>
+        <div class="metric">
+          <div class="metric-k">Users · pilot</div>
+          <div class="metric-v">~200</div>
+          <div class="metric-d">District pilot · R&amp;D phase</div>
+        </div>
+        <div class="metric">
+          <div class="metric-k">Users · full rollout</div>
+          <div class="metric-v">~17,000</div>
+          <div class="metric-d">Shared regional compute center</div>
+        </div>
+        <div class="metric highlight">
+          <div class="metric-k">AI accuracy</div>
+          <div class="metric-v">≥ 75%</div>
+          <div class="metric-d">Qualification · form review · review notes</div>
+        </div>
+      </div>
+
+      <div class="req-grid">
+        <article class="req-card">
+          <h3>Response &amp; stability</h3>
+          <ul>
+            <li>Low-latency responses after user request; targets set by scenario and concurrent load</li>
+            <li>High-throughput compute for real-time review workflows</li>
+            <li>Long-running stability — no crash under continuous operation</li>
+          </ul>
+        </article>
+        <article class="req-card">
+          <h3>Accuracy scope</h3>
+          <ul>
+            <li>AI outputs held to high-stakes review standards</li>
+            <li>Target ≥ 75% on qualification, formality review, and case-note drafting</li>
+            <li>Human-in-the-loop edit path when the model is uncertain</li>
+          </ul>
+        </article>
+        <article class="req-card">
+          <h3>Security · access-controlled deployment</h3>
+          <ul>
+            <li>Identity authentication required</li>
+            <li>Fine-grained access control</li>
+            <li>In-transit protection: SSL / TLS</li>
+            <li>Controlled / offline-capable network constraints</li>
+          </ul>
+        </article>
+        <article class="req-card">
+          <h3>Rollout scale</h3>
+          <ul>
+            <li>Phase 1: district pilot · ~200 users</li>
+            <li>Phase 2: regional shared compute · ~17,000 users</li>
+            <li>Capacity and latency planned for the larger footprint</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
