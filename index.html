@@ -596,56 +596,6 @@
     .req-card li { margin-bottom: 4px; }
     .req-card li:last-child { margin-bottom: 0; }
 
-    .own-banner {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .own-banner span {
-      font-size: 0.75rem;
-      border-radius: 999px;
-      padding: 4px 10px;
-      border: 1px solid #c5d3de;
-      background: #fff;
-      color: var(--ink);
-    }
-    .own-banner .mine {
-      background: #eef6ef;
-      border-color: #6a9b78;
-      color: #1a3a28;
-      font-weight: 500;
-    }
-    .own-banner .plat {
-      color: var(--muted);
-    }
-    .panel.coplan { border-style: dashed; opacity: 0.95; }
-    .panel.built {
-      border-color: #6a9b78;
-      box-shadow: 0 0 0 2px rgba(106, 155, 120, 0.1);
-    }
-    .agents.owned {
-      border: 2px solid #6a9b78;
-      background: #f4faf5;
-      box-shadow: 0 0 0 4px rgba(106, 155, 120, 0.12);
-    }
-    .agents.owned .agents-label {
-      color: #2d6a4f;
-      font-weight: 500;
-    }
-    .node.dim {
-      opacity: 0.72;
-      background: #f3f4f6;
-      border-color: #d5dde5;
-    }
-    .own-legend {
-      margin-top: 12px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-    .own-legend strong { color: var(--ink); font-weight: 500; }
-
     .problem-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -697,8 +647,7 @@
         <p>
           High-stakes case files are long, multi-document, and must be complete, consistent, and
           source-traced. A single prompt cannot enforce required-document rules, cross-file conflicts,
-          or auditable citations. I owned the review engine that turns messy dossiers into cited,
-          editable findings.
+          or auditable citations — the system combines structured processing, rules, retrieval, and LLMs.
         </p>
       </header>
       <div class="problem-grid">
@@ -708,16 +657,12 @@
         </article>
         <article class="problem-card">
           <h3>What I owned</h3>
-          <p>Fact–Evidence core: conflict detection, knowledge-graph extract/cleanup, key-record surfacing, and editable cited summaries. I also co-planned subject-profile and required-file checklist design with the team.</p>
+          <p>Built an AI document-analysis pipeline for large, sensitive case files in a fully offline environment — structured text processing, rule-based checks, retrieval, and LLMs. Designed and evaluated hybrid LLM + regex extraction and prompt workflows for multi-stage extraction; ran iterative error analysis to improve accuracy, consistency, and reliability.</p>
         </article>
         <article class="problem-card">
           <h3>Why not only LLM</h3>
           <p>Deterministic gates first (required docs, authority ranking); LLM for extraction and semantic conflict filtering; every claim keeps file + page + snippet for human audit.</p>
         </article>
-      </div>
-      <div class="own-banner" aria-label="Ownership legend">
-        <span class="mine">Green outline = modules I owned</span>
-        <span class="plat">Muted = platform / shared infra I integrated with</span>
       </div>
     </section>
 
@@ -725,36 +670,35 @@
     <section class="section" aria-labelledby="overall-title">
       <header class="section-head">
         <p class="eyebrow">02 · System architecture</p>
-        <h2 id="overall-title">Pipeline map — my modules in the center</h2>
+        <h2 id="overall-title">End-to-end pipeline: documents → cited answers</h2>
         <p>
-          Full system path below. My deepest ownership is inside Fact–Evidence (conflict, graph,
-          records, editable summary). I contributed to planning for subject profile and file-checklist
-          design; OCR ingest is platform infrastructure.
+          OCR → slices → parallel review agents → shared engine (file-missing + conflict) →
+          structured facts with provenance → reviewer UI and editable draft with evidence attached.
         </p>
       </header>
 
-      <div class="flow" role="img" aria-label="Overall review pipeline with owned modules highlighted">
+      <div class="flow" role="img" aria-label="Overall review pipeline structure">
         <div class="flow-lane">
-          <div class="node dim">
+          <div class="node">
             <div class="tag">1</div>
             <strong>OCR case files</strong>
-            <span>platform ingest</span>
+            <span>scanned PDFs · transcripts</span>
           </div>
           <div class="chev" aria-hidden="true"></div>
-          <div class="node dim">
+          <div class="node">
             <div class="tag">2</div>
             <strong>Document slices</strong>
-            <span>typed file store</span>
+            <span>by category / type</span>
           </div>
         </div>
         <div class="flow-down" aria-hidden="true"></div>
-        <div class="agents owned">
+        <div class="agents">
           <div class="agents-label">3 · Review agents <em>parallel</em></div>
           <div class="agent-grid">
-            <div class="node agent"><strong>Identity</strong><span>co-planned profile fields</span></div>
+            <div class="node agent"><strong>Identity</strong><span>profile + required docs</span></div>
             <div class="node agent"><strong>Procedure</strong><span>checklist + time order</span></div>
             <div class="node agent hot">
-              <strong>Fact–Evidence · owned core</strong>
+              <strong>Fact–Evidence</strong>
               <span>conflict · graph · cites ↓</span>
               <div class="side">
                 <span class="side-arrow">↳</span>
@@ -769,7 +713,7 @@
           <div class="node warm">
             <div class="tag">4</div>
             <strong>Shared engine</strong>
-            <span>file-missing + conflict · owned in FE path</span>
+            <span>file-missing check + conflict check</span>
           </div>
           <div class="chev" aria-hidden="true"></div>
             <div class="node">
@@ -780,24 +724,24 @@
         </div>
         <div class="flow-down" aria-hidden="true"></div>
         <div class="outputs">
-          <div class="agents-label">6 · Outputs <em>cited draft path</em></div>
+          <div class="agents-label">6 · Outputs <em>verified packs · evidence attached</em></div>
           <div class="out-grid">
             <div class="node out"><strong>Reviewer UI</strong><span>findings ↔ source pane</span></div>
-            <div class="node out"><strong>Draft with cites</strong><span>editable summary · owned</span></div>
+            <div class="node out"><strong>Draft with cites</strong><span>templates + evidence</span></div>
           </div>
         </div>
       </div>
-      <p class="own-legend"><strong>Green center = Fact–Evidence ownership.</strong> Section 03 shows panels 3–6 as built by me; panels 1–2 as plan discussion.</p>
     </section>
 
     <!-- Figure 2: Fact–Evidence example -->
     <section class="section" aria-labelledby="fe-title">
       <header class="section-head">
-        <p class="eyebrow">03 · Engineering deep dive · Fact–Evidence (my module)</p>
+        <p class="eyebrow">03 · Engineering deep dive · Fact–Evidence</p>
         <h2 id="fe-title">Completeness · extract · conflict · graph · provenance</h2>
         <p>
-          Fact–Evidence path: panels <strong>1–2 co-planned</strong> (identity fields, required-file checklist);
-          panels <strong>3–6 built by me</strong> (conflicts, knowledge graph, key records, editable summary with provenance).
+          One agent end to end: subject profile and core facts, required-evidence checklist,
+          cross-document conflicts, knowledge graph, key transcripts, then an editable section
+          summary with provenance. Panels 1–2: involved in plan discussion; panels 3–6: built.
         </p>
       </header>
 
@@ -805,10 +749,10 @@
         <div class="fe-main">
 
           <!-- 1 Identity + core facts -->
-          <article class="panel coplan">
+          <article class="panel">
             <div class="panel-h">
               <h3>Subject profile &amp; core facts</h3>
-              <span class="step">1 · Identity · co-planned</span>
+              <span class="step">1 · Identity</span>
             </div>
             <div class="profile">
               <div class="profile-row"><span>Name</span><strong>Alex Chen</strong></div>
@@ -823,10 +767,10 @@
           </article>
 
           <!-- 2 Missing-file check -->
-          <article class="panel coplan">
+          <article class="panel">
             <div class="panel-h">
               <h3>Required evidence checklist</h3>
-              <span class="step">2 · Files · co-planned</span>
+              <span class="step">2 · Files</span>
             </div>
             <ul class="check-list">
               <li class="ok">
@@ -858,10 +802,10 @@
           </article>
 
           <!-- 4 Knowledge graph — aligned to 6 entity types + relation lexicon -->
-          <article class="panel built">
+          <article class="panel">
             <div class="panel-h">
               <h3>Knowledge graph · extracted triples</h3>
-              <span class="step">4 · Graph · built</span>
+              <span class="step">4 · Graph</span>
             </div>
             <p class="graph-note">
               Six entity types: Person · Organization · Asset · Legal provision · Auxiliary fact · Impact &amp; consequence.
@@ -983,10 +927,10 @@
           </article>
 
           <!-- 5 Key transcripts -->
-          <article class="panel built">
+          <article class="panel">
             <div class="panel-h">
               <h3>Key transcript files</h3>
-              <span class="step">5 · Records · built</span>
+              <span class="step">5 · Records</span>
             </div>
             <div class="files">
               <div class="file">
@@ -1016,10 +960,10 @@
 
         <!-- Right: conflicts only -->
         <aside class="fe-side">
-          <article class="panel built">
+          <article class="panel">
             <div class="panel-h">
               <h3>Cross-file conflicts</h3>
-              <span class="step">3 · Conflict · built</span>
+              <span class="step">3 · Conflict</span>
             </div>
             <div class="finding">
               <div class="kind">Oral vs oral</div>
@@ -1046,10 +990,10 @@
       </div>
 
       <!-- 6 Summary — full width under the two columns, still editable -->
-      <article class="panel built fe-summary" style="padding:0; overflow:hidden;">
+      <article class="panel fe-summary" style="padding:0; overflow:hidden;">
         <div class="panel-h" style="padding:12px 14px 0; margin-bottom:0;">
           <h3>Section summary</h3>
-          <span class="step">6 · Summary · built</span>
+          <span class="step">6 · Summary</span>
         </div>
         <div class="editor">
           <div class="editor-bar">
@@ -1077,7 +1021,7 @@ Reviewer action: confirm whether the missing chat export can be obtained; keep c
     <!-- Figure 3: where techniques sit -->
     <section class="section" aria-labelledby="tech-title">
       <header class="section-head">
-        <p class="eyebrow">03b · Techniques inside owned modules</p>
+        <p class="eyebrow">03b · Techniques in the pipeline</p>
         <h2 id="tech-title">Rules, chunking, graph extract, GraphRAG</h2>
         <p>
           Concrete methods used in the review core: semantic chunking, rule/regex gates,
